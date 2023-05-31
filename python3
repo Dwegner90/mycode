@@ -1,0 +1,127 @@
+import random
+
+def play_game():
+    words = {
+        "fruits": ["apple", "banana", "orange", "grape", "melon", "lemon", "strawberry", "pineapple", "kiwi", "watermelon"],
+        "states": ["alabama", "alaska", "arizona", "arkansas", "california", "colorado", "connecticut", "delaware",
+                   "florida", "georgia", "hawaii", "idaho", "illinois", "indiana", "iowa", "kansas", "kentucky",
+                   "louisiana", "maine", "maryland", "massachusetts", "michigan", "minnesota", "mississippi",
+                   "missouri", "montana", "nebraska", "nevada", "new hampshire", "new jersey", "new mexico",
+                   "new york", "north carolina", "north dakota", "ohio", "oklahoma", "oregon", "pennsylvania",
+                   "rhode island", "south carolina", "south dakota", "tennessee", "texas", "utah", "vermont",
+                   "virginia", "washington", "west virginia", "wisconsin", "wyoming"]
+    }
+    guessed_letters = []
+    attempts = 0
+    score = 0
+    hint_tokens = 3
+
+    print("Welcome to the Word Guessing Game!")
+
+    print("Select a category:")
+    print("1. Fruits")
+    print("2. States")
+    category = int(input("Enter the corresponding number (1 or 2): "))
+
+    if category == 1:
+        category_name = "fruits"
+    elif category == 2:
+        category_name = "states"
+    else:
+        print("Invalid category. The game will be played with fruits.")
+        category_name = "fruits"
+
+    selected_word = random.choice(words[category_name])
+
+    print("Select the difficulty level:")
+    print("1. Easy")
+    print("2. Medium")
+    print("3. Hard")
+    level = int(input("Enter the corresponding number (1, 2, or 3): "))
+
+    if level == 1:
+        attempts = 10
+    elif level == 2:
+        attempts = 7
+    elif level == 3:
+        attempts = 5
+    elif level == 4:
+        attempts = 4
+    elif level == 5:
+        attempts = 3
+    elif level == 6:
+        attempts = 2
+    elif level == 7:
+        attempts = 1
+    elif level == 8:
+        attempts = 1
+        hint_tokens = 1
+    elif level == 9:
+        attempts = 1
+        hint_tokens = 0
+    elif level == 10:
+        attempts = 1
+        hint_tokens = 0
+    else:
+        print("Invalid level. The game will be played on medium difficulty.")
+        attempts = 7
+
+    print("Try to guess the letters of the word within", attempts, "attempts.")
+
+    while attempts > 0:
+        hidden_word = ""
+        for letter in selected_word:
+            if letter in guessed_letters:
+                hidden_word += letter
+            else:
+                hidden_word += "_ "
+
+        print("Word:", hidden_word)
+
+        if hidden_word == selected_word:
+            print("Congratulations! You guessed the word!")
+            score += 1
+            print("Your score:", score)
+            break
+
+        guess = input("Enter a letter or type 'hint' to get a hint: ").lower()
+
+        if guess == "hint":
+            if hint_tokens > 0:
+                hint_tokens -= 1
+                random_letter = random.choice(list(selected_word))
+                while random_letter in guessed_letters:
+                    random_letter = random.choice(list(selected_word))
+                print("Hint:", random_letter)
+                continue
+            else:
+                print("No more hint tokens left. Try guessing a letter instead.")
+                continue
+
+        if len(guess) != 1 or not guess.isalpha():
+            print("Invalid input. Please enter a single letter.")
+            continue
+
+        if guess in guessed_letters:
+            print("You already guessed that letter. Try again.")
+            continue
+
+        guessed_letters.append(guess)
+
+        if guess not in selected_word:
+            attempts -= 1
+            print("Wrong guess! Attempts left:", attempts)
+
+        if attempts == 0:
+            print("Game over! The word was", selected_word)
+            print("Your final score:", score)
+            break
+
+    play_again = input("Do you want to play again? (yes/no): ")
+    if play_again.lower() == "yes":
+        play_game()
+    else:
+        print("Thank you for playing!")
+
+play_game()
+
